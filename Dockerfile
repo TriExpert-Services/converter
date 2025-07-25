@@ -1,21 +1,22 @@
 FROM node:18-alpine
 
-# Install system dependencies for HEIC conversion
+# Instalar dependencias necesarias para conversión HEIC
 RUN apk add --no-cache \
     vips-dev \
     python3 \
     make \
     g++
 
+# Crear carpeta de trabajo
 WORKDIR /app
 
-# Copy package files
+# Copiar archivos de dependencias
 COPY package*.json ./
 
-# Install all dependencies (including dev for build)
+# Instalar todas las dependencias (incluyendo dev para el build)
 RUN npm install
 
-# Copy source code
+# Copiar código fuente completo
 COPY . .
 
 # Crear directorios necesarios con permisos correctos
@@ -24,25 +25,17 @@ RUN mkdir -p uploads output dist && \
     adduser -S nextjs -u 1001 && \
     chown -R nextjs:nodejs /app /app/uploads /app/output /tmp
 
-# Build the React app
+# Construir la app React
 RUN npm run build
 
-# Clean install only production dependencies
+# Limpiar e instalar solo dependencias de producción
 RUN npm ci --only=production && npm cache clean --force
 
-# Copy server files
-COPY server/ ./server/
-
-# Expose port
-EXPOSE 4545
-
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
-
-# Change ownership
-RUN chown -R nextjs:nodejs /app
+# Cambiar al usuario no-root
 USER nextjs
 
-# Start the server
+# Exponer el puerto
+EXPOSE 4545
+
+# Iniciar el servidor
 CMD ["node", "server/index.js"]
