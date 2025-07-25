@@ -20,10 +20,11 @@ RUN npm install
 COPY . .
 
 # Crear directorios necesarios con permisos correctos
-RUN mkdir -p uploads output dist && \
+RUN mkdir -p uploads output dist /tmp && \
     addgroup -g 1001 -S nodejs && \
     adduser -S nextjs -u 1001 && \
-    chown -R nextjs:nodejs /app /app/uploads /app/output /tmp
+    chown -R nextjs:nodejs /app && \
+    chmod -R 755 /app/uploads /app/output /tmp
 
 # Construir la app React
 RUN npm run build

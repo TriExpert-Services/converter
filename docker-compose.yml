@@ -4,8 +4,8 @@ services:
     ports:
       - "4545:4545"
     volumes:
-      - ./uploads:/app/uploads
-      - ./output:/app/output
+      - heic_uploads:/app/uploads
+      - heic_output:/app/output
     environment:
       - NODE_ENV=production
       - PORT=4545
@@ -16,3 +16,9 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+volumes:
+  heic_uploads:
+    driver: local
+  heic_output:
+    driver: local
