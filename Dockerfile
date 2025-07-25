@@ -12,8 +12,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install --only=production
+# Install all dependencies (including dev for build)
+RUN npm install
 
 # Copy source code
 COPY . .
@@ -23,6 +23,9 @@ RUN mkdir -p uploads output dist
 
 # Build the React app
 RUN npm run build
+
+# Clean install only production dependencies
+RUN npm ci --only=production && npm cache clean --force
 
 # Copy server files
 COPY server/ ./server/
